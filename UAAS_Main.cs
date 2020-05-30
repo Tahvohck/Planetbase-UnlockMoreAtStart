@@ -112,14 +112,6 @@ using Module = Planetbase.Module;
     }
 
 
-    [HarmonyPatch(typeof(ModuleTypeFactory))]
-    [HarmonyPatch(MethodType.Constructor)]
-    public class PatchFactory
-    {
-        public static void Postfix(ModuleTypeFactory __instance) => PatchRequirements.Postfix(__instance);
-    }
-
-
     [HarmonyPatch(typeof(ModuleTypeMultiDome))]
     [HarmonyPatch(MethodType.Constructor)]
     public class PatchMultiDome
