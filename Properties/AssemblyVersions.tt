@@ -8,7 +8,7 @@ using System.Reflection;
 //      Major Version
 //      Minor Version
 //      Build Number
-//      Revision (Days since start of year)
+//      Revision (Year (2 digit) + Days since start of year)
 [assembly: AssemblyVersion("<#= this.Major #>.<#= this.Minor #>.<#= this.Patch #>")]
 [assembly: AssemblyFileVersion("<#= this.Major #>.<#= this.Minor #>.<#= this.Patch #>.<#= this.year #><#= this.days #>")]
 [assembly: AssemblyInformationalVersion("<#= this.Major #>.<#= this.Minor #>" +
