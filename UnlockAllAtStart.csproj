@@ -67,12 +67,6 @@
     <Compile Include="Properties\AssemblyInfo.cs" />
   </ItemGroup>
   <ItemGroup>
-    <ProjectReference Include="..\ZZZ_UpdateLists\ZZZ_UpdateLists.csproj">
-      <Project>{0428dd26-4864-42f4-9869-9ed19ea26b41}</Project>
-      <Name>ZZZ_UpdateLists</Name>
-    </ProjectReference>
-  </ItemGroup>
-  <ItemGroup>
     <Content Include="Properties\AssemblyVersions.tt">
       <Generator>TextTemplatingFileGenerator</Generator>
       <LastGenOutput>AssemblyVersions.cs</LastGenOutput>
@@ -80,6 +74,12 @@
   </ItemGroup>
   <ItemGroup>
     <Service Include="{508349B6-6B84-4DF5-91F0-309BEEBAD82D}" />
+  </ItemGroup>
+  <ItemGroup>
+    <ProjectReference Include="..\modhooker\Modhooker.csproj">
+      <Project>{0428dd26-4864-42f4-9869-9ed19ea26b41}</Project>
+      <Name>Modhooker</Name>
+    </ProjectReference>
   </ItemGroup>
   <Import Project="$(MSBuildToolsPath)\Microsoft.CSharp.targets" />
   <PropertyGroup>
