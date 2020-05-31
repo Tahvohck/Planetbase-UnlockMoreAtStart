@@ -69,7 +69,7 @@ using Module = Planetbase.Module;
             sMax = module.getMaxSize();
             sMin = module.getMinSize();
 
-            string render = 
+            string render =
                 $"\n  NAME:     {module.getName()}" +
                 $"\n  SizeMax:  {sMax,2}\tSizeMin:  {sMin,2}\tHeight:  {module.getHeight(),4}" +
                 $"\n  POW_COL:  {powCollected}\tPOW_GEN:  {powGen}\tPOW_STO:   {powStore}" +
@@ -153,6 +153,22 @@ using Module = Planetbase.Module;
     public class PatchLandingPad
     {
         public static void Postfix(ModuleTypeLandingPad __instance) => PatchRequirements.Postfix(__instance);
+    }
+
+
+    [HarmonyPatch(typeof(ModuleTypeWaterTank))]
+    [HarmonyPatch(MethodType.Constructor)]
+    public class PatchWaterTank
+    {
+        public static void Postfix(ModuleTypeWaterTank __instance) => PatchRequirements.Postfix(__instance);
+    }
+
+
+    [HarmonyPatch(typeof(ModuleTypeSignpost))]
+    [HarmonyPatch(MethodType.Constructor)]
+    public class PatchSignpost
+    {
+        public static void Postfix(ModuleTypeSignpost __instance) => PatchRequirements.Postfix(__instance);
     }
     #endregion
 
