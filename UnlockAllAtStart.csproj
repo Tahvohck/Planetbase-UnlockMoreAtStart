@@ -28,7 +28,8 @@
     <DebugType>pdbonly</DebugType>
     <Optimize>true</Optimize>
     <OutputPath>bin\Release\</OutputPath>
-    <DefineConstants>TRACE</DefineConstants>
+    <DefineConstants>
+    </DefineConstants>
     <ErrorReport>prompt</ErrorReport>
     <WarningLevel>4</WarningLevel>
     <Prefer32Bit>false</Prefer32Bit>
@@ -82,7 +83,7 @@
   <Import Project="$(MSBuildToolsPath)\Microsoft.CSharp.targets" />
   <PropertyGroup>
     <PostBuildEvent>mkdir "$(SolutionDir)Output\" 2&gt; nul
-cp "$(TargetPath)" "$(SolutionDir)Output\$(ProjectName)-$(ConfigurationName)$(TargetExt)"
-cp "$(TargetPath)" "$(SolutionDir)Output\$(ProjectName)$(TargetExt)"</PostBuildEvent>
+cp "$(TargetPath)" "$(SolutionDir)Output\$(TargetName)-$(ConfigurationName)$(TargetExt)"
+cp "$(TargetPath)" "$(SolutionDir)Output\$(TargetFileName)"</PostBuildEvent>
   </PropertyGroup>
 </Project>
