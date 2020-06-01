@@ -18,8 +18,8 @@ using System.Reflection;
     "")]
 #endif
 <#+
-	int Major = 0;
-	int Minor = 1;
+	int Major = 1;
+	int Minor = 0;
 	int Patch = 0;
 	string year = DateTime.UtcNow.ToString("yy");
 	int days = (int)(DateTime.UtcNow - new DateTime(DateTime.UtcNow.Year,1,1)).TotalDays;

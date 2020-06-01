@@ -7,8 +7,8 @@
     <ProjectGuid>{29EAC41B-E843-4CBA-AE19-443C64AB9861}</ProjectGuid>
     <OutputType>Library</OutputType>
     <AppDesignerFolder>Properties</AppDesignerFolder>
-    <RootNamespace>UnlockAllAtStart</RootNamespace>
-    <AssemblyName>UnlockAllAtStart</AssemblyName>
+    <RootNamespace>Tahvohck_Mods</RootNamespace>
+    <AssemblyName>UnlockAtStart</AssemblyName>
     <TargetFrameworkVersion>v3.5</TargetFrameworkVersion>
     <FileAlignment>512</FileAlignment>
     <Deterministic>true</Deterministic>
