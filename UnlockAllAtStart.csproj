@@ -7,8 +7,8 @@
     <ProjectGuid>{29EAC41B-E843-4CBA-AE19-443C64AB9861}</ProjectGuid>
     <OutputType>Library</OutputType>
     <AppDesignerFolder>Properties</AppDesignerFolder>
-    <RootNamespace>UnlockAllAtStart</RootNamespace>
-    <AssemblyName>UnlockAllAtStart</AssemblyName>
+    <RootNamespace>Tahvohck_Mods</RootNamespace>
+    <AssemblyName>UnlockAtStart</AssemblyName>
     <TargetFrameworkVersion>v3.5</TargetFrameworkVersion>
     <FileAlignment>512</FileAlignment>
     <Deterministic>true</Deterministic>
@@ -28,7 +28,8 @@
     <DebugType>pdbonly</DebugType>
     <Optimize>true</Optimize>
     <OutputPath>bin\Release\</OutputPath>
-    <DefineConstants>TRACE</DefineConstants>
+    <DefineConstants>
+    </DefineConstants>
     <ErrorReport>prompt</ErrorReport>
     <WarningLevel>4</WarningLevel>
     <Prefer32Bit>false</Prefer32Bit>
@@ -56,6 +57,10 @@
       <HintPath>G:\SteamLibrary\steamapps\common\Planetbase\Planetbase_Data\Managed\UnityEngine.UI.dll</HintPath>
       <Private>False</Private>
     </Reference>
+    <Reference Include="UnityModManager, Version=0.22.4.0, Culture=neutral, processorArchitecture=MSIL">
+      <SpecificVersion>False</SpecificVersion>
+      <HintPath>..\UnityModManager.dll</HintPath>
+    </Reference>
   </ItemGroup>
   <ItemGroup>
     <Compile Include="Properties\AssemblyVersions.cs">
@@ -65,12 +70,6 @@
     </Compile>
     <Compile Include="UAAS_Main.cs" />
     <Compile Include="Properties\AssemblyInfo.cs" />
-  </ItemGroup>
-  <ItemGroup>
-    <ProjectReference Include="..\ZZZ_UpdateLists\ZZZ_UpdateLists.csproj">
-      <Project>{0428dd26-4864-42f4-9869-9ed19ea26b41}</Project>
-      <Name>ZZZ_UpdateLists</Name>
-    </ProjectReference>
   </ItemGroup>
   <ItemGroup>
     <Content Include="Properties\AssemblyVersions.tt">
@@ -84,7 +83,7 @@
   <Import Project="$(MSBuildToolsPath)\Microsoft.CSharp.targets" />
   <PropertyGroup>
     <PostBuildEvent>mkdir "$(SolutionDir)Output\" 2&gt; nul
-cp "$(TargetPath)" "$(SolutionDir)Output\$(ProjectName)-$(ConfigurationName)$(TargetExt)"
-cp "$(TargetPath)" "$(SolutionDir)Output\$(ProjectName)$(TargetExt)"</PostBuildEvent>
+cp "$(TargetPath)" "$(SolutionDir)Output\$(TargetName)-$(ConfigurationName)$(TargetExt)"
+cp "$(TargetPath)" "$(SolutionDir)Output\$(TargetFileName)"</PostBuildEvent>
   </PropertyGroup>
 </Project>

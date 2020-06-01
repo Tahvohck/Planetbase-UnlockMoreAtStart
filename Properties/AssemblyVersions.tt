@@ -8,7 +8,7 @@ using System.Reflection;
 //      Major Version
 //      Minor Version
 //      Build Number
-//      Revision (Days since start of year)
+//      Revision (Year (2 digit) + Days since start of year)
 [assembly: AssemblyVersion("<#= this.Major #>.<#= this.Minor #>.<#= this.Patch #>")]
 [assembly: AssemblyFileVersion("<#= this.Major #>.<#= this.Minor #>.<#= this.Patch #>.<#= this.year #><#= this.days #>")]
 [assembly: AssemblyInformationalVersion("<#= this.Major #>.<#= this.Minor #>" +
@@ -18,8 +18,8 @@ using System.Reflection;
     "")]
 #endif
 <#+
-	int Major = 0;
-	int Minor = 1;
+	int Major = 1;
+	int Minor = 0;
 	int Patch = 0;
 	string year = DateTime.UtcNow.ToString("yy");
 	int days = (int)(DateTime.UtcNow - new DateTime(DateTime.UtcNow.Year,1,1)).TotalDays;

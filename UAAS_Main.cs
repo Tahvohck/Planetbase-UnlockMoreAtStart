@@ -5,55 +5,61 @@ using System.Collections.Generic;
 using System.Diagnostics;
 using System.Reflection;
 using UnityEngine;
+using UnityModManagerNet;
 
 namespace Tahvohck_Mods
 {
-using Module = Planetbase.Module;
-    public class UAAS_Main : IMod
+    using Module = Planetbase.Module;
+    using Entry = UnityModManager.ModEntry;
+
+    public class UAAS_Main
     {
-        public void Init()
-        {
-#if TRACE
-            Harmony.DEBUG = true;
-#endif
-            ZZZ_Modhooker.PreResetEvent += Setup;
-#if DEBUG
-            ZZZ_Modhooker.PostResetEvent += RunChecks;
-#endif
-            TahvUtil.Log("Mod initialized.");
-            ModuleTypeList.mInstance = new ModuleTypeList(); // Re-instantiate the canonical instance
-        }
+        internal static Entry.ModLogger Logger;
 
-        public void Update()
+        public static void Load(Entry UMMData)
         {
-            //throw new NotImplementedException();
-        }
+            Logger = UMMData.Logger;
 
-        public static void Setup(object caller, EventArgs args)
-        {
             try {
                 Harmony harmony = new Harmony(typeof(UAAS_Main).FullName);
                 harmony.PatchAll();
-                TahvUtil.Log("Setup complete.");
+                Logger.Log("Setup complete.");
             } catch (HarmonyException hError) {
                 string error =
                     $"Harmony patch failure, try enabling debug." +
                     $"\n  {hError.Message}";
-                TahvUtil.Log(error);
+                Logger.Log(error);
             } catch (Exception exGeneric) {
-                TahvUtil.Log(
+                Logger.Log(
                     $"Generic issue happened. Catching it instead of propagating. Contact Tahvohck." +
                     $"\n  {exGeneric.Message}"
                 );
             }
+
+            try {
+                FieldInfo mtlInstance = typeof(TypeList<ModuleType, ModuleTypeList>)
+                    .GetField("mInstance", BindingFlags.NonPublic | BindingFlags.Static);
+                mtlInstance?.SetValue(null, null);
+            } catch (Exception e) {
+                Logger.Log($"{e.Message}" +
+                    $"\n  {e.GetType().FullName}\n{e.StackTrace}");
+            }
+
+#if DEBUG
+            RunChecks();
+#endif
         }
 
-        public static void RunChecks(object caller, EventArgs args)
+        public static void RunChecks()
         {
-            ModuleType solar = new ModuleTypeSolarPanel();
-            TahvUtil.Log(solar.Render());
-            TahvUtil.Log(new ModuleTypeStorage().Render());
-            TahvUtil.Log(new ModuleTypeAirlock().Render());
+            Logger.Log(
+                TypeList<ModuleType, ModuleTypeList>
+                .find<ModuleTypeStorage>()
+                .Render());
+            Logger.Log(
+                TypeList<ModuleType, ModuleTypeList>
+                .find<ModuleTypeWindTurbine>()
+                .Render());
         }
     }
 
@@ -69,15 +75,13 @@ using Module = Planetbase.Module;
             sMax = module.getMaxSize();
             sMin = module.getMinSize();
 
-            string render = 
+            string render =
                 $"\n  NAME:     {module.getName()}" +
                 $"\n  SizeMax:  {sMax,2}\tSizeMin:  {sMin,2}\tHeight:  {module.getHeight(),4}" +
                 $"\n  POW_COL:  {powCollected}\tPOW_GEN:  {powGen}\tPOW_STO:   {powStore}" +
                 $"\n  UsersMax: {module.getMaxUsers()}" +
                 $"\n  O2_s1:    {module.getOxygenGeneration(1f)}" +
-                $"\n  REQUIRED: {module.getRequiredModuleType()} ({module.getRequiredModuleType() is null})" +
-                $"\n  REQName:  {module.mRequiredStructure.mName} ({module.mRequiredStructure.mName is null})" +
-                $"\n  REQModule {module.mRequiredStructure.mModuleType} ({module.mRequiredStructure.mModuleType is null})";
+                $"\n  REQUIRED: {module.getRequiredModuleType()} ({module.getRequiredModuleType() is null})";
             return render;
         }
     }
@@ -85,15 +89,31 @@ using Module = Planetbase.Module;
 
     /// <summary>
     /// Patches to be reused for all the different modules.
+    /// Inherits from ModuleType to be able to access the needed bits.
     /// </summary>
     public class PatchRequirements
     {
+        public static ModuleTypeRef emptyRequirement = new ModuleTypeRef();
+
         public static void Postfix<T>(T __instance) where T : ModuleType
         {
-            __instance.mRequiredStructure.mModuleType = null;
-            __instance.mRequiredStructure.mName = null;
+
+            try {
+                var mReqField = typeof(T).GetField(
+                    "mRequiredStructure",
+                    BindingFlags.NonPublic | BindingFlags.Instance);
+
+                mReqField?.SetValue(__instance, new ModuleTypeRef());
+#if DEBUG
+                UAAS_Main.Logger.Log($"Removed requirements on: {__instance?.getName()}");
+#endif
+            } catch (Exception e) {
+                UAAS_Main.Logger.Log($"Error while patching {__instance.getName()}");
+                UAAS_Main.Logger.Log($"\n{e.Message}\n{e.StackTrace}");
+            }
         }
     }
+
 
     #region Internal Modules
     [HarmonyPatch(typeof(ModuleTypeStorage))]
@@ -109,14 +129,6 @@ using Module = Planetbase.Module;
     public class PatchCanteen
     {
         public static void Postfix(ModuleTypeCanteen __instance) => PatchRequirements.Postfix(__instance);
-    }
-
-
-    [HarmonyPatch(typeof(ModuleTypeFactory))]
-    [HarmonyPatch(MethodType.Constructor)]
-    public class PatchFactory
-    {
-        public static void Postfix(ModuleTypeFactory __instance) => PatchRequirements.Postfix(__instance);
     }
 
 
@@ -162,34 +174,50 @@ using Module = Planetbase.Module;
     {
         public static void Postfix(ModuleTypeLandingPad __instance) => PatchRequirements.Postfix(__instance);
     }
+
+
+    [HarmonyPatch(typeof(ModuleTypeWaterTank))]
+    [HarmonyPatch(MethodType.Constructor)]
+    public class PatchWaterTank
+    {
+        public static void Postfix(ModuleTypeWaterTank __instance) => PatchRequirements.Postfix(__instance);
+    }
+
+
+    [HarmonyPatch(typeof(ModuleTypeSignpost))]
+    [HarmonyPatch(MethodType.Constructor)]
+    public class PatchSignpost
+    {
+        public static void Postfix(ModuleTypeSignpost __instance) => PatchRequirements.Postfix(__instance);
+    }
     #endregion
 
 
-    [HarmonyPatch(typeof(GuiMenuItem), "areRequirementsMet")]
-    public class PatchGUIMI_areRequirementsMet
-    {
-        internal static List<ModuleType> SeenModules = new List<ModuleType>();
-
-        public static void Prefix(GuiMenuItem __instance)
-        {
-            if (__instance.getModuleType() is null) { return; }
-            if (SeenModules.Contains(__instance.getModuleType())) {
-                return;
-            } else {
-                SeenModules.Add(__instance.getModuleType());
-            }
-            string item = __instance.getModuleType().getName();
-
-            ModuleType mAltType = __instance.mAlternativeRequiredModuleType;
-            bool isReqTypeNull = __instance.mRequiredModuleType is null;
-            bool thisTypeIsNull = __instance.mAlternativeRequiredModuleType is null;
-            bool isReqTypeBuilt = !isReqTypeNull && Module.isModuleTypeBuilt(__instance.mRequiredModuleType);
-            bool thisIsBuilt = !thisTypeIsNull && Module.isModuleTypeBuilt(mAltType);
-
-            bool isEnabled =  isReqTypeNull || thisIsBuilt || isReqTypeBuilt;
-
-            TahvUtil.Log($"Checking menu item {item,17}, {isEnabled,-5} (hasReq: {!isReqTypeNull,-5}" +
-                $" - BuiltAlready: {thisIsBuilt,-5} - ReqBuilt: {isReqTypeBuilt,-5})");
-        }
-    }
+    //[HarmonyPatch(typeof(GuiMenuItem), "areRequirementsMet")]
+    //public class PatchGUIMI_areRequirementsMet
+    //{
+    //    internal static List<ModuleType> SeenModules = new List<ModuleType>();
+    //
+    //    public static void Prefix(GuiMenuItem __instance)
+    //    {
+    //        if (__instance.getModuleType() is null) { return; }
+    //        if (SeenModules.Contains(__instance.getModuleType())) {
+    //            return;
+    //        } else {
+    //            SeenModules.Add(__instance.getModuleType());
+    //        }
+    //        string item = __instance.getModuleType().getName();
+    //
+    //        ModuleType mAltType = __instance.getRequiredModuleType();
+    //        bool isReqTypeNull = __instance.mRequiredModuleType is null;
+    //        bool thisTypeIsNull = __instance.mAlternativeRequiredModuleType is null;
+    //        bool isReqTypeBuilt = !isReqTypeNull && Module.isModuleTypeBuilt(__instance.mRequiredModuleType);
+    //        bool thisIsBuilt = !thisTypeIsNull && Module.isModuleTypeBuilt(mAltType);
+    //
+    //        bool isEnabled =  isReqTypeNull || thisIsBuilt || isReqTypeBuilt;
+    //
+    //        UAAS_Main.Logger.Log($"Checking menu item {item,17}, {isEnabled,-5} (hasReq: {!isReqTypeNull,-5}" +
+    //            $" - BuiltAlready: {thisIsBuilt,-5} - ReqBuilt: {isReqTypeBuilt,-5})");
+    //    }
+    //}
 }
