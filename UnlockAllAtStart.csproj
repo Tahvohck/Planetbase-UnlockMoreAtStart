@@ -85,8 +85,6 @@
   </ItemGroup>
   <Import Project="$(MSBuildToolsPath)\Microsoft.CSharp.targets" />
   <PropertyGroup>
-    <PostBuildEvent>mkdir "$(SolutionDir)Output\" 2&gt; nul
-cp "$(TargetPath)" "$(SolutionDir)Output\$(TargetName)-$(ConfigurationName)$(TargetExt)"
-cp "$(TargetPath)" "$(SolutionDir)Output\$(TargetFileName)"</PostBuildEvent>
+    <PostBuildEvent>powershell -noprofile "&amp; '$(SolutionDir)PackFiles.ps1' -OutputDir '$(TargetDir)' -TargetFileName '$(TargetName)' -SolutionDir '$(SolutionDir)' -Project '$(ProjectName)' -BuildConfig '$(ConfigurationName)'"</PostBuildEvent>
   </PropertyGroup>
 </Project>
