@@ -1,4 +1,5 @@
 ﻿<#@ template debug="false" hostspecific="false" language="C#" #>
+<#@ include file="version.t4" #>
 <#@ output extension=".cs" #>
 using System.Reflection;
 #pragma warning disable CS7035 // The specified version string does not conform to the recommended format - major.minor.build.revision
@@ -9,18 +10,11 @@ using System.Reflection;
 //      Minor Version
 //      Build Number
 //      Revision (Year (2 digit) + Days since start of year)
-[assembly: AssemblyVersion("<#= this.Major #>.<#= this.Minor #>.<#= this.Patch #>")]
-[assembly: AssemblyFileVersion("<#= this.Major #>.<#= this.Minor #>.<#= this.Patch #>.<#= this.year #><#= this.days #>")]
-[assembly: AssemblyInformationalVersion("<#= this.Major #>.<#= this.Minor #>" +
+[assembly: AssemblyVersion("<#= this.version #>")]
+[assembly: AssemblyFileVersion("<#= this.version #>.<#= this.buildID #>")]
+[assembly: AssemblyInformationalVersion("<#= this.version.ToString(2) #>" +
 #if DEBUG
     " DEBUG")]
 #else
     "")]
 #endif
-<#+
-	int Major = 1;
-	int Minor = 0;
-	int Patch = 0;
-	string year = DateTime.UtcNow.ToString("yy");
-	int days = (int)(DateTime.UtcNow - new DateTime(DateTime.UtcNow.Year,1,1)).TotalDays;
-#>
