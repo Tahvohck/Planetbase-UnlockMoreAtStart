@@ -22,6 +22,7 @@ namespace Tahvohck_Mods
                 typeof(ModuleTypeMultiDome),
                 typeof(ModuleTypeBioDome),
                 typeof(ModuleTypeProcessingPlant),
+                typeof(ModuleTypeControlCenter),
 
                 // External modules
                 typeof(ModuleTypeWindTurbine),
