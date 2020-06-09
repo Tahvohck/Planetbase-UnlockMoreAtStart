@@ -1,0 +1,11 @@
+﻿<#@ template debug="false" hostspecific="false" language="C#" #>
+<#@ include file="version.t4" #>
+<#@ output extension=".json" #>
+{
+    "ID":           "UnlockMoreAtStart",
+    "Author":       "Tahvohck",
+    "Version":      "<#= this.version #>.<#= this.buildID #>",
+
+    "EntryMethod":   "FALSE-STUB",
+    "DisplayName":  "Remove requirements from buildings"
+}

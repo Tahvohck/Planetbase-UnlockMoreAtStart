@@ -11,6 +11,7 @@ namespace Tahvohck_Mods
     {
         internal static Entry.ModLogger Logger;
 
+        [LoaderOptimization(LoaderOptimization.NotSpecified)]
         public static void Load(Entry UMMData)
         {
             Logger = UMMData.Logger;
