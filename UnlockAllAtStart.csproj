@@ -76,11 +76,21 @@
       <Generator>TextTemplatingFileGenerator</Generator>
       <LastGenOutput>AssemblyVersions.cs</LastGenOutput>
     </Content>
+    <Content Include="Properties\Info.tt">
+      <Generator>TextTemplatingFileGenerator</Generator>
+      <LastGenOutput>Info.json</LastGenOutput>
+    </Content>
   </ItemGroup>
   <ItemGroup>
     <Service Include="{508349B6-6B84-4DF5-91F0-309BEEBAD82D}" />
   </ItemGroup>
   <ItemGroup>
+    <None Include="Properties\Info.json">
+      <DependentUpon>Info.tt</DependentUpon>
+      <AutoGen>True</AutoGen>
+      <CopyToOutputDirectory>Always</CopyToOutputDirectory>
+      <DesignTime>True</DesignTime>
+    </None>
     <None Include="Properties\version.t4" />
   </ItemGroup>
   <Import Project="$(MSBuildToolsPath)\Microsoft.CSharp.targets" />
