@@ -9,28 +9,52 @@ namespace Tahvohck_Mods
 
     public class UAAS_Main
     {
+        internal static int skippedIDX = 0;
         internal static Entry.ModLogger Logger;
+        internal static Action<Entry, float> defaultOnUpdate;
+        internal static Type[] typesToEnable = new[] {
+            // Internal modules
+            typeof(ModuleTypeStorage),
+            typeof(ModuleTypeCanteen),
+            typeof(ModuleTypeMultiDome),
+            typeof(ModuleTypeBioDome),
+            typeof(ModuleTypeProcessingPlant),
+            typeof(ModuleTypeControlCenter),
+
+            // External modules
+            typeof(ModuleTypeWindTurbine),
+            typeof(ModuleTypeLandingPad),
+            typeof(ModuleTypeWaterTank),
+            typeof(ModuleTypeSignpost),
+        };
 
         [LoaderOptimization(LoaderOptimization.NotSpecified)]
         public static void Load(Entry UMMData)
         {
             Logger = UMMData.Logger;
+            defaultOnUpdate = UMMData.OnUpdate;
+            UMMData.OnUpdate = Update;
+        }
 
-            Type[] typesToEnable = new[] {
-                // Internal modules
-                typeof(ModuleTypeStorage),
-                typeof(ModuleTypeCanteen),
-                typeof(ModuleTypeMultiDome),
-                typeof(ModuleTypeBioDome),
-                typeof(ModuleTypeProcessingPlant),
-                typeof(ModuleTypeControlCenter),
+        public static void RunChecks()
+        {
+            Logger.Log(
+                TypeList<ModuleType, ModuleTypeList>
+                .find<ModuleTypeStorage>()
+                .Render());
+            Logger.Log(
+                TypeList<ModuleType, ModuleTypeList>
+                .find<ModuleTypeWindTurbine>()
+                .Render());
+        }
 
-                // External modules
-                typeof(ModuleTypeWindTurbine),
-                typeof(ModuleTypeLandingPad),
-                typeof(ModuleTypeWaterTank),
-                typeof(ModuleTypeSignpost),
-            };
+        public static void Update(Entry UMMData, float tDelta)
+        {
+            if (!(GameManager.getInstance().getGameState() is GameStateLogo)) {
+                skippedIDX++;
+                return;
+            }
+            Logger.Log($"Skipped {skippedIDX} frames before being ready.");
 
             foreach (Type t in typesToEnable) {
                 FieldInfo mReqField = t
@@ -46,21 +70,12 @@ namespace Tahvohck_Mods
 
                 mReqField?.SetValue(moduleInst, new ModuleTypeRef());
             }
+
 #if DEBUG
             RunChecks();
 #endif
-        }
-
-        public static void RunChecks()
-        {
-            Logger.Log(
-                TypeList<ModuleType, ModuleTypeList>
-                .find<ModuleTypeStorage>()
-                .Render());
-            Logger.Log(
-                TypeList<ModuleType, ModuleTypeList>
-                .find<ModuleTypeWindTurbine>()
-                .Render());
+            Logger.Log("Done patching.");
+            UMMData.OnUpdate = defaultOnUpdate;
         }
     }
 
