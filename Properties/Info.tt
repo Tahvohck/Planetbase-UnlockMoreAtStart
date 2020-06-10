@@ -6,6 +6,7 @@
     "Author":       "Tahvohck",
     "Version":      "<#= this.version #>.<#= this.buildID #>",
 
-    "EntryMethod":   "FALSE-STUB",
-    "DisplayName":  "Remove requirements from buildings"
+    "EntryMethod":  "FALSE-STUB",
+    "DisplayName":  "Remove requirements from buildings",
+    "AssemblyName": ""
 }
