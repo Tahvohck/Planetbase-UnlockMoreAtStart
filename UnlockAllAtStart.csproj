@@ -93,6 +93,12 @@
     </None>
     <None Include="Properties\version.t4" />
   </ItemGroup>
+  <ItemGroup>
+    <ProjectReference Include="..\_Utilities\_Utilities.csproj">
+      <Project>{9d8aab70-1302-465e-ac17-5ad525e3c4ee}</Project>
+      <Name>_Utilities</Name>
+    </ProjectReference>
+  </ItemGroup>
   <Import Project="$(MSBuildToolsPath)\Microsoft.CSharp.targets" />
   <PropertyGroup>
     <PostBuildEvent>powershell -noprofile "&amp; '$(SolutionDir)PackFiles.ps1' -OutputDir '$(TargetDir)' -TargetFileName '$(TargetName)' -SolutionDir '$(SolutionDir)' -Project '$(ProjectName)' -BuildConfig '$(ConfigurationName)'"</PostBuildEvent>

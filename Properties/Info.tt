@@ -2,11 +2,14 @@
 <#@ include file="version.t4" #>
 <#@ output extension=".json" #>
 {
-    "ID":           "UnlockMoreAtStart",
-    "Author":       "Tahvohck",
-    "Version":      "<#= this.version #>.<#= this.buildID #>",
-
     "EntryMethod":  "FALSE-STUB",
-    "DisplayName":  "Remove requirements from buildings",
-    "AssemblyName": ""
+    "Version":      "<#= this.version #>.<#= this.buildID #>",
+    "AssemblyName": "FALSE-STUB",
+    "Repository":   "FALSE-STUB",
+    "HomePage":     "FALSE-STUB",
+    "Author":       "FALSE-STUB",
+
+    "Requirements": ["PBUtilities"],
+    "ID":           "UnlockMoreAtStart",
+    "DisplayName":  "Remove requirements from buildings"
 }
