@@ -10,7 +10,7 @@ namespace Tahvohck_Mods
     public class UAAS_Main
     {
         internal static int skippedIDX = 0;
-        internal static Entry.ModLogger Logger;
+        internal static BufferedLogger Logger;
         internal static Action<Entry, float> defaultOnUpdate;
         internal static Type[] typesToEnable = new[] {
             // Internal modules
@@ -31,30 +31,30 @@ namespace Tahvohck_Mods
         [LoaderOptimization(LoaderOptimization.NotSpecified)]
         public static void Load(Entry UMMData)
         {
-            Logger = UMMData.Logger;
+            Logger = new BufferedLogger(UMMData);
             defaultOnUpdate = UMMData.OnUpdate;
-            UMMData.OnUpdate = Update;
+            TahvohckUtil.FirstUpdate += Update;
         }
 
         public static void RunChecks()
         {
-            Logger.Log(
+            Logger.Buffer(
                 TypeList<ModuleType, ModuleTypeList>
                 .find<ModuleTypeStorage>()
                 .Render());
-            Logger.Log(
+            Logger.Write(
                 TypeList<ModuleType, ModuleTypeList>
                 .find<ModuleTypeWindTurbine>()
                 .Render());
         }
 
-        public static void Update(Entry UMMData, float tDelta)
+        public static void Update()
         {
             if (!(GameManager.getInstance().getGameState() is GameStateLogo)) {
                 skippedIDX++;
                 return;
             }
-            Logger.Log($"Skipped {skippedIDX} frames before being ready.");
+            Logger.Buffer($"Skipped {skippedIDX} frames before being ready.");
 
             foreach (Type t in typesToEnable) {
                 FieldInfo mReqField = t
@@ -62,7 +62,7 @@ namespace Tahvohck_Mods
                 ModuleType moduleInst = ModuleTypeList.find(t.Name);
 
 #if DEBUG
-                Logger.Log(
+                Logger.Buffer(
                     $"Inst is null? {moduleInst is null}\t" +
                     $"ReqField is null? {mReqField is null}\t" +
                     $"[{t?.Name.Remove(0, 10)}]");
@@ -70,12 +70,12 @@ namespace Tahvohck_Mods
 
                 mReqField?.SetValue(moduleInst, new ModuleTypeRef());
             }
+            Logger.Flush();
 
 #if DEBUG
             RunChecks();
 #endif
-            Logger.Log("Done patching.");
-            UMMData.OnUpdate = defaultOnUpdate;
+            Logger.Write("Done patching.");
         }
     }
 
