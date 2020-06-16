@@ -41,11 +41,11 @@ namespace Tahvohck_Mods
             Logger.Buffer(
                 TypeList<ModuleType, ModuleTypeList>
                 .find<ModuleTypeStorage>()
-                .Render());
+                .Representation());
             Logger.Write(
                 TypeList<ModuleType, ModuleTypeList>
                 .find<ModuleTypeWindTurbine>()
-                .Render());
+                .Representation());
         }
 
         public static void Update()
@@ -76,29 +76,6 @@ namespace Tahvohck_Mods
             RunChecks();
 #endif
             Logger.Write("Done patching.");
-        }
-    }
-
-
-    public static class Extensions
-    {
-        public static string Render(this ModuleType module)
-        {
-            int powGen = module.getPowerGeneration(1, Planet.Quantity.High, Planet.Quantity.High);
-            int powStore = module.getPowerStorageCapacity(1);
-            int powCollected = module.getPowerCollection(1);
-            int sMax, sMin;
-            sMax = module.getMaxSize();
-            sMin = module.getMinSize();
-
-            string render =
-                $"\n  NAME:     {module.getName()}" +
-                $"\n  SizeMax:  {sMax,2}\tSizeMin:  {sMin,2}\tHeight:  {module.getHeight(),4}" +
-                $"\n  POW_COL:  {powCollected}\tPOW_GEN:  {powGen}\tPOW_STO:   {powStore}" +
-                $"\n  UsersMax: {module.getMaxUsers()}" +
-                $"\n  O2_s1:    {module.getOxygenGeneration(1f)}" +
-                $"\n  REQUIRED: {module.getRequiredModuleType()} ({module.getRequiredModuleType() is null})";
-            return render;
         }
     }
 }
