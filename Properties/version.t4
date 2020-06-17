@@ -1,8 +1,8 @@
 ﻿<#+
 	Version version = new Version(
 		major: 1,
-		minor: 1,
-		build: 0
+		minor: 2,
+		build: 1
 	);
 
 	string buildID = string.Concat(
