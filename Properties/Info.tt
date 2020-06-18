@@ -11,5 +11,5 @@
 
     "Requirements": ["PBUtilities"],
     "ID":           "UnlockMoreAtStart",
-    "DisplayName":  "Remove requirements from buildings"
+    "DisplayName":  "Building Prerequisite Remover"
 }
